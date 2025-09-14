@@ -1,0 +1,86 @@
+services:
+  rails_exporter:
+    build: .
+    container_name: rails_exporter
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: bundle exec prometheus_exporter -b 0.0.0.0 -p 9394
+    ports:
+      - "9394:9394"
+    networks:
+      - monitoring
+
+  rails:
+    build: .
+    environment:
+      RAILS_ENV: development
+      PROMETHEUS_EXPORTER_HOST: rails_exporter
+      PROMETHEUS_EXPORTER_PORT: 9394
+    ports:
+      - "3000:80"
+    depends_on:
+      - rails_exporter
+    networks:
+      - monitoring
+
+  node_exporter:
+    image: prom/node-exporter:latest
+    container_name: node_exporter
+    restart: unless-stopped
+    ports:
+      - "9100:9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($|/)'
+      - '--collector.netdev.device-exclude=^(veth.*|docker.*|br-.*|lo)$'
+      - '--collector.netstat'
+      - '--collector.diskstats'
+      - '--collector.meminfo'
+      - '--collector.vmstat'
+      - '--collector.systemd'
+      - '--collector.processes'
+      - '--web.listen-address=:9100'
+      - '--log.level=info'
+    networks:
+      - monitoring
+    privileged: true
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./files/etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    networks:
+      - monitoring
+
+  grafana:
+    image: grafana/grafana:latest
+    user: "472" # grafana default UID for storage
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: "admin"
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./files/etc/grafana/provisioning:/etc/grafana/provisioning:ro
+    ports:
+      - "3001:3000"
+    depends_on:
+      - prometheus
+    networks:
+      - monitoring
+
+volumes:
+  grafana-data:
+
+networks:
+  monitoring:
+    driver: bridge

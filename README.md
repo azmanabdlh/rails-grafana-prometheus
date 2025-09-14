@@ -1,24 +1,24 @@
-# README
+# Rails Metric Observability
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This repository is created for learning observability in Ruby on Rails applications.
 
-Things you may want to cover:
+![Dashboard](files/dashboard.png)
 
-* Ruby version
+## Stack
 
-* System dependencies
+- Ruby on Rails
+- SQLite
+- Docker (Prometheus, Grafana, Node Exporter, Rails Exporter)
 
-* Configuration
+## How to Run
 
-* Database creation
+1. Make sure Docker is installed on your machine.
+2. Open your terminal and run the following command:
 
-* Database initialization
+	```bash
+	docker-compose up -d
+	```
 
-* How to run the test suite
+3. Access Grafana and Prometheus via your browser according to the configuration in `docker-compose.yml`.
 
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+4. Done

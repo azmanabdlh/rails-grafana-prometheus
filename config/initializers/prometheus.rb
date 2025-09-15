@@ -8,5 +8,4 @@ if Rails.env.development? || Rails.env.production?
 
   PrometheusExporter::Instrumentation::ActiveRecord.start
   PrometheusExporter::Instrumentation::Process.start
-  PrometheusExporter::Instrumentation::Puma.start
 end

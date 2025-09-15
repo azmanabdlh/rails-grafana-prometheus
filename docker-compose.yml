@@ -23,6 +23,12 @@ services:
       - rails_exporter
     networks:
       - monitoring
+    logging:
+      driver: loki
+      options:
+        loki-url: "http://localhost:3100/loki/api/v1/push"
+        loki-retries: 5
+        loki-batch-size: 400
 
   node_exporter:
     image: prom/node-exporter:latest

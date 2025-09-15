@@ -4,11 +4,13 @@ This repository is created for learning observability in Ruby on Rails applicati
 
 ![Dashboard](files/dashboard.png)
 
+![Loki](files/loki.png)
+
 ## Stack
 
 - Ruby on Rails
 - SQLite
-- Docker (Prometheus, Grafana, Node Exporter, Rails Exporter)
+- Docker (Prometheus, Grafana, Loki, Promtail, Node Exporter, Rails Exporter)
 
 ## How to Run
 

@@ -78,6 +78,24 @@ services:
     networks:
       - monitoring
 
+  loki:
+    image: grafana/loki:2.9.0
+    restart: unless-stopped
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - monitoring
+
+  promtail:
+    image: grafana/promtail:2.9.0
+    volumes:
+      - ./files/etc/promtail:/etc/promtail
+      - ./log:/var/log/myapp
+    command: -config.file=/etc/promtail/promtail.yaml
+    networks:
+      - monitoring
+
 volumes:
   grafana-data:
 

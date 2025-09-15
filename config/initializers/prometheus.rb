@@ -7,4 +7,6 @@ if Rails.env.development? || Rails.env.production?
   Rails.application.middleware.unshift PrometheusExporter::Middleware
 
   PrometheusExporter::Instrumentation::ActiveRecord.start
+  PrometheusExporter::Instrumentation::Process.start
+  PrometheusExporter::Instrumentation::Puma.start
 end
